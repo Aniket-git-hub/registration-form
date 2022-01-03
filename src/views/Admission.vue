@@ -1,6 +1,6 @@
 <template>
-  <section class="section">
-    <div class="container card">
+  <section class="section columns ">
+    <div class="column is-four-fifths container card">
       <form class="card-content">
         <h1 class="title is-4 ">Admission From</h1>
         <div class="columns">
@@ -58,7 +58,7 @@
             <textarea class="textarea" placeholder="Current Address"></textarea>
           </div>
         </div>
-        <div class="columns is-mobile">
+        <div class="columns">
           <div class="column field">
             <label class="label">Religion</label>
             <div class="control">
