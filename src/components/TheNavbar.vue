@@ -31,11 +31,12 @@
         <div class="navbar-item">
           <div class="buttons">
             <a class="button is-primary">
-              <strong>Admin</strong>
+              <strong>SignOut</strong>
             </a>
           </div>
         </div>
       </div>
+
     </div>
   </nav>
 </template>
