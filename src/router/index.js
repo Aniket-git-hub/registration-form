@@ -10,12 +10,17 @@ const routes = [
   {
     path: '/notice',
     name: 'notice',
-    component: () => import(/* webpackChunkName: "about" */ '../views/notice.vue')
+    component: () => import('../views/notice.vue')
   },
   {
     path: '/admin',
     name: 'adminDashboard',
     component: () => import('../views/admin/dashboard.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/login.vue')
   },
   //404 redirect
   {

@@ -5,10 +5,12 @@
     <div class="columns">
       <div class="column"><create-notice-form /></div>
       <div class="column">
-        <a class="button is-info"
-        @click="downloadCSV" 
-        :href="metaCSVData.href" 
-        :download=" metaCSVData.name ">
+        <a
+          class="button is-info"
+          @click="downloadCSV"
+          :href="metaCSVData.href"
+          :download="metaCSVData.name"
+        >
           Download CSV
         </a>
       </div>
@@ -116,8 +118,8 @@ export default {
     };
   },
   methods: {
-    downloadCSV() {
-      const items = this.admisssions;
+    convertToCSV(data){
+      const items = data;
       const replacer = (key, value) => (value === null ? "" : value); // specify how you want to handle null values here
       const header = Object.keys(items[0]);
       const csv = [
@@ -128,9 +130,13 @@ export default {
             .join(",")
         ),
       ].join("\r\n");
-      
-      const blob = new Blob([csv], { type: "text/csv" });
-      const href = URL.createObjectURL(blob);
+      return csv
+    },
+    
+    downloadCSV() {
+      const csv = this.convertToCSV(this.admisssions)
+      const blob = new Blob([csv], { type: "text/csv" })
+      const href = URL.createObjectURL(blob)
       this.metaCSVData.href = href
       this.metaCSVData.name =  new Date().getSeconds().toString() + 
       new Date().getMinutes().toString() + 
