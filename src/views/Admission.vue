@@ -13,6 +13,7 @@
                 placeholder="Student Name"
                 required
                 v-model="name"
+                @keyup="validateInput($event, name, 'name')"
               />
             </div>
           </div>
@@ -25,6 +26,7 @@
                 placeholder="Mother's Name"
                 required
                 v-model="mother"
+                @keyup="validateInput($event, mother, 'name')"
               />
             </div>
           </div>
@@ -39,8 +41,10 @@
                 placeholder="Mobile Number"
                 required
                 v-model="mobile"
+                @keyup="validateInput($event, mobile, 'mobile')"
               />
             </div>
+            <p class="help is-danger">This email is invalid</p>
           </div>
 
           <div class="column field">
@@ -51,6 +55,7 @@
                 type="email"
                 placeholder="Email input"
                 v-model="email"
+                @keyup="validateInput($event, email, 'email')"
               />
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
@@ -69,7 +74,7 @@
             <div class="control">
               <div class="select">
                 <select required v-model="standard">
-                  <option disabled>Select dropdown</option>
+                  <option disabled selected>Select dropdown</option>
                   <option value="1">Standard 1</option>
                   <option value="1">Standard 2</option>
                   <option value="1">Standard 3</option>
@@ -86,8 +91,10 @@
               <input
                 class="input"
                 type="date"
-                placeholder="Mobile Number"
+                placeholder="Date of Birth"
                 v-model="DOB"
+                required
+                @click="validateInput($event, DOB, 'DOB')"
               />
             </div>
           </div>
@@ -100,6 +107,7 @@
               class="textarea"
               placeholder="Current Address"
               v-model="currentAddress"
+              @click="validateInput($event, currentAddress, 'currentAddress')"
             ></textarea>
           </div>
         </div>
@@ -110,7 +118,7 @@
             <div class="control">
               <div class="select">
                 <select required v-model="religion">
-                  <option disabled>Select dropdown</option>
+                  <option disabled selected>Select dropdown</option>
                   <option value="hindu">Hindu</option>
                   <option value="muslim">Muslim</option>
                   <option value="jain">Jain</option>
@@ -126,7 +134,7 @@
             <div class="control">
               <div class="select">
                 <select required v-model="caste">
-                  <option disabled>Select dropdown</option>
+                  <option disabled selected>Select dropdown</option>
                   <option value="open">Open</option>
                   <option value="obc">OBC</option>
                   <option value="sc-st">SC/ST</option>
@@ -136,44 +144,50 @@
           </div>
         </div>
         <div class="columns">
-        <div class=" column field">
-          <label for="" class="label">Birth Certificate</label>
-          <div class="control">
-            <div class="file has-name">
-              <label class="file-label">
-                <input
-                  class="file-input"
-                  type="file"
-                  name="birth-certificate"
-                  @change="fileOnchange"
-                  required
-                  accept="image/*"
-                />
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-upload"></i>
+          <div class="column field">
+            <label for="" class="label">Birth Certificate</label>
+            <div class="control">
+              <div class="file has-name">
+                <label class="file-label">
+                  <input
+                    class="file-input"
+                    type="file"
+                    name="birth-certificate"
+                    @change="fileOnchange"
+                    required
+                    accept="image/*"
+                  />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label"> Choose a file… </span>
                   </span>
-                  <span class="file-label"> Choose a file… </span>
-                </span>
-                <span class="file-name">
-                  {{ birthCertificate.name }}
-                </span>
-              </label>
+                  <span class="file-name">
+                    {{ birthCertificate.name }}
+                  </span>
+                </label>
+              </div>
             </div>
+            <p class="help is-danger">{{ fileMessage }}</p>
+          </div>
+          <div class="column notification is-info">
+            <figure class="image is-16by9">
+              <img ref="preview" alt="preview" />
+            </figure>
           </div>
         </div>
-        <div class="column notification is-info">
-        <figure class="image is-16by9">
-          <img ref="preview" alt="preview" />
-        </figure>
-        </div>
-    </div>
         <div class="field is-grouped">
           <div class="control">
-            <button type="submit" class="button is-link">Submit</button>
+            <button class="button is-link is-light">Cancel</button>
           </div>
           <div class="control">
-            <button class="button is-link is-light">Cancel</button>
+            <button class="button is-link is-light" @click="clear">
+              Clear
+            </button>
+          </div>
+          <div class="control">
+            <button type="submit" class="button is-link">Submit</button>
           </div>
         </div>
       </form>
@@ -198,9 +212,86 @@ export default {
       standard: "Select dropdown",
       religion: "Select dropdown",
       birthCertificate: "",
+      fileMessage: null,
     };
   },
   methods: {
+    clear() {
+      this.birthCertificate = "";
+      this.$refs.preview.src = "";
+      this.$refs.admissionForm.reset();
+      console.log(this.$refs);
+    },
+    validateInput(e, value, type) {
+      const element = e.target.classList;
+      switch (type) {
+        case "name":
+          if (/^[a-zA-Z ]{2,30}$/.test(value)) {
+            element.remove("is-danger");
+            element.add("is-success");
+          } else {
+            element.remove("is-success");
+            element.add("is-danger");
+          }
+          break;
+        case "mobile":
+          if (/^[789]\d{9}$/.test(value)) {
+            element.remove("is-danger");
+            element.add("is-success");
+          } else {
+            element.remove("is-success");
+            element.add("is-danger");
+          }
+          break;
+        case "email":
+          if (/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/.test(value)) {
+            element.remove("is-danger");
+            element.add("is-success");
+          } else {
+            element.remove("is-success");
+            element.add("is-danger");
+          }
+          break;
+        case "DOB":
+          if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value)) {
+            element.remove("is-danger");
+            element.add("is-success");
+          } else {
+            element.remove("is-success");
+            element.add("is-danger");
+          }
+          break;
+        case "currentAddress":
+          // if (/ /.test(value)) {
+          //   element.remove("is-danger");
+          //   element.add("is-success");
+          // } else {
+          //   element.remove("is-success");
+          //   element.add("is-danger");
+          // }
+          break;
+        case "religion":
+          if (/^[a-zA-Z ]{4,10}$/.test(value)) {
+            element.remove("is-danger");
+            element.add("is-success");
+          } else {
+            element.remove("is-success");
+            element.add("is-danger");
+          }
+          break;
+        case "caste":
+          if (/^[a-zA-Z ]{3,8}$/.test(value)) {
+            element.remove("is-danger");
+            element.add("is-success");
+          } else {
+            element.remove("is-success");
+            element.add("is-danger");
+          }
+          break;
+        default:
+          break;
+      }
+    },
     submit() {
       console.log(
         this.name,
@@ -220,18 +311,21 @@ export default {
 
       if (file) {
         if (file.size > 60000) {
-          alert("file size is exceeding the limits You idiot");
+          this.fileMessage = "file size is exceeding the limits You idiot";
           return;
         }
         if (file.type == "image/png" || file.type == "image/jpeg") {
+          this.fileMessage = null;
           this.birthCertificate = file;
 
-          let reader = new FileReader()
+          let reader = new FileReader();
           const imgPreview = this.$refs.preview;
-          reader.onload = function(){
-             imgPreview.src = reader.result
-          }
-          reader.readAsDataURL(file)
+          reader.onload = function () {
+            imgPreview.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.fileMessage = "Only Images";
         }
       }
     },
